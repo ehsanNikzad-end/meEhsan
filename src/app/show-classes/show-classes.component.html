@@ -1,0 +1,35 @@
+<table
+  style="text-align: center; font-size: 25px"
+  class="table table-bordered text-red"
+>
+  <thead>
+    <tr class="">
+      <th>id</th>
+      <th>class_id</th>
+      <th>subject</th>
+      <th>fee</th>
+      <th>time</th>
+      <th>teacher</th>
+      <th>X</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let class of classes">
+      <td>{{ class.id }}</td>
+      <td>{{ class.classId }}</td>
+      <td>{{ class.subject }}</td>
+      <td>{{ class.fee }}</td>
+      <td>{{ class.time }}</td>
+      <td>{{ class.teacher }}</td>
+      <td>
+        <button
+          style="background-color: red; border-radius: 5px"
+          (click)="deleteClass(class.id)"
+          class="btn btn-danger"
+        >
+          delete
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

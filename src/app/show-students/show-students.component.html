@@ -1,0 +1,54 @@
+<table
+  class="table table-bordered text-red"
+  style="text-align: center; font-size: 25px"
+>
+  <thead>
+    <tr class="">
+      <th>Name</th>
+      <th>Picture</th>
+      <th>Age</th>
+      <th>Class</th>
+      <th>Time</th>
+      <th>Teacher</th>
+      <th>X_class</th>
+      <th>X_course</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let registeredOne of registeredOnes">
+      <td>{{ registeredOne.student.name }}</td>
+      <td>
+        <img
+          [src]="
+            'http://localhost:8000/students/' + registeredOne.student.picture
+          "
+          alt="Student Picture"
+          width="80"
+          height="80"
+        />
+      </td>
+      <td>{{ registeredOne.student.age }}</td>
+      <td>{{ registeredOne.classs.classId }}</td>
+      <td>{{ registeredOne.classs.time }}</td>
+      <td>{{ registeredOne.classs.teacher }}</td>
+      <td>
+        <button
+          (click)="deleteFromClass(registeredOne.id)"
+          class="btn closing btn-danger"
+          style="background-color: red; border-radius: 5px"
+        >
+          R_F_Class
+        </button>
+      </td>
+      <td>
+        <button
+          (click)="deleteFromCourse(registeredOne.student.id)"
+          class="btn closing btn-danger"
+          style="background-color: red; border-radius: 5px"
+        >
+          R_F_Course
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

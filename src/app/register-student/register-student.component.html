@@ -1,0 +1,27 @@
+<form (ngSubmit)="onSubmit()">
+  <label class=""
+    >Name:
+    <select
+      [(ngModel)]="studentForm.student_id"
+      name="student_id"
+      class="form-select btn-lg btn-secondary mr-3"
+    >
+      <option *ngFor="let student of students" value="{{ student.id }}">
+        {{ student.name }}____{{ student.phone }}
+      </option>
+    </select>
+  </label>
+  <label class=""
+    >Subject:
+    <select
+      [(ngModel)]="studentForm.class_id"
+      name="class_id"
+      class="form-select btn-lg btn-secondary mr-3"
+    >
+      <option *ngFor="let class of classes" value="{{ class.id }}">
+        {{ class.subject }}____{{ class.teacher }}
+      </option>
+    </select>
+  </label>
+  <input type="submit" name="submit" class="btn btn-success" />
+</form>
