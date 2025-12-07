@@ -1,2 +1,24 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f9fafb;
+}
 
+.main-content {
+  margin-left: 280px;
+  margin-top: 70px;
+  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.main-content.sidebar-collapsed {
+  margin-left: 80px;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}

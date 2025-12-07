@@ -1,27 +1,82 @@
-<form (ngSubmit)="onSubmit()">
-  <label class=""
-    >Name:
-    <select
-      [(ngModel)]="studentForm.student_id"
-      name="student_id"
-      class="form-select btn-lg btn-secondary mr-3"
-    >
-      <option *ngFor="let student of students" value="{{ student.id }}">
-        {{ student.name }}____{{ student.phone }}
-      </option>
-    </select>
-  </label>
-  <label class=""
-    >Subject:
-    <select
-      [(ngModel)]="studentForm.class_id"
-      name="class_id"
-      class="form-select btn-lg btn-secondary mr-3"
-    >
-      <option *ngFor="let class of classes" value="{{ class.id }}">
-        {{ class.subject }}____{{ class.teacher }}
-      </option>
-    </select>
-  </label>
-  <input type="submit" name="submit" class="btn btn-success" />
-</form>
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-clipboard-check-fill"></i>
+      </div>
+      <div>
+        <h1 class="page-title">ثبت شاگرد در صنف</h1>
+        <p class="page-subtitle">شاگرد را در یک صنف ثبت نام کنید</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="form-card">
+      <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
+        <p>در حال بارگذاری...</p>
+      </div>
+
+      <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="student_id" class="form-label">
+              <i class="bi bi-person"></i> انتخاب شاگرد <span class="required">*</span>
+            </label>
+            <select
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('student_id')"
+              id="student_id"
+              formControlName="student_id"
+            >
+              <option value="">یک شاگرد انتخاب کنید...</option>
+              <option *ngFor="let student of students" [value]="student.id">
+                {{ getStudentDisplayText(student) }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('student_id')">
+              لطفاً یک شاگرد انتخاب کنید
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="class_id" class="form-label">
+              <i class="bi bi-book"></i> انتخاب صنف <span class="required">*</span>
+            </label>
+            <select
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('class_id')"
+              id="class_id"
+              formControlName="class_id"
+            >
+              <option value="">یک صنف انتخاب کنید...</option>
+              <option *ngFor="let classItem of classes" [value]="classItem.id">
+                {{ getClassDisplayText(classItem) }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('class_id')">
+              لطفاً یک صنف انتخاب کنید
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+          >
+            <i class="bi bi-x-circle"></i> لغو
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="registrationForm.invalid || isLoading"
+          >
+            <i class="bi bi-check-circle"></i> ثبت شاگرد
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

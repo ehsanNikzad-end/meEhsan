@@ -1,0 +1,97 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-book"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="page-title">Subjects</h1>
+        <p class="page-subtitle">Manage all subjects</p>
+      </div>
+    </div>
+    <button class="btn-add" routerLink="/add-subject">
+      <i class="bi bi-plus-circle"></i> Add New Subject
+    </button>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Stats Cards -->
+    <div class="stats-grid" *ngIf="!isLoading">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+          <i class="bi bi-book"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ filteredSubjects.length }}</div>
+          <div class="stat-label">Total Subjects</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ subjects.length }}</div>
+          <div class="stat-label">Active</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-section" *ngIf="!isLoading">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by subject name..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+        <button class="search-btn" (click)="onSearch()" *ngIf="searchTerm">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="results-info">
+        Showing {{ filteredSubjects.length }} {{ filteredSubjects.length === 1 ? 'subject' : 'subjects' }}
+      </div>
+    </div>
+
+    <!-- Subjects Grid -->
+    <div class="subjects-grid" *ngIf="!isLoading && filteredSubjects.length > 0">
+      <div class="subject-card card-hover" *ngFor="let subject of filteredSubjects; trackBy: trackBySubjectId">
+        <div class="subject-header">
+          <div class="subject-icon">
+            <i class="bi bi-book-fill"></i>
+          </div>
+          <div class="subject-info">
+            <h3 class="subject-name">{{ subject.name }}</h3>
+          </div>
+        </div>
+        <div class="subject-actions">
+          <button class="action-btn btn-edit" (click)="editSubject(subject.id)" title="Edit">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="action-btn btn-danger" (click)="deleteSubject(subject.id)" title="Delete">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredSubjects.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h3>No subjects found</h3>
+      <p>{{ searchTerm ? 'Try adjusting your search criteria' : 'Get started by adding your first subject' }}</p>
+      <button class="btn btn-primary" routerLink="/add-subject" *ngIf="!searchTerm">
+        <i class="bi bi-plus-circle"></i> Add First Subject
+      </button>
+    </div>
+  </div>
+</div>
+
+
+

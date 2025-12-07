@@ -1,0 +1,56 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-book"></i>
+      </div>
+      <div>
+        <h1 class="page-title">{{ isEditMode ? 'ویرایش مضمون' : 'افزودن مضمون جدید' }}</h1>
+        <p class="page-subtitle">{{ isEditMode ? 'اطلاعات مضمون را به‌روزرسانی کنید' : 'جزئیات را پر کنید تا یک مضمون جدید اضافه شود' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="form-card">
+      <form [formGroup]="subjectForm" (ngSubmit)="onSubmit()">
+        <div class="form-group full-width">
+          <label for="name" class="form-label">
+            <i class="bi bi-book"></i> نام مضمون <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('name')"
+            id="name"
+            formControlName="name"
+            placeholder="نام مضمون را وارد کنید (مثال: انگلیسی، ریاضیات، علوم کامپیوتر)"
+          />
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+            {{ getFieldError('name') }}
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+          >
+            لغو
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="subjectForm.invalid"
+          >
+            {{ isEditMode ? 'به‌روزرسانی مضمون' : 'افزودن مضمون' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+

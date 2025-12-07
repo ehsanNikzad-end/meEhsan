@@ -1,48 +1,56 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { API_ENDPOINTS } from '../shared/constants/api-endpoints';
+import { StudentResponse, ApiResponse } from '../shared/models/student.model';
+import { RegisterStudentPageResponse, StudentRegistration } from '../shared/models/registration.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StudentService {
-  private apiUrl = 'http://localhost:8000/api/AddStudent';
-  private apiUrlShowStudents = 'http://localhost:8000/api/ShowStudents';
-  private apiUrlRegisterStudentPage =
-    'http://localhost:8000/api/RegisterStudentPage';
-  private apiUrlRegisterStudent = 'http://localhost:8000/api/RegisterStudent';
-  private apiUrlShowRegisteredStudents =
-    'http://localhost:8000/api/ShowRegisteredStudents';
-
   constructor(private http: HttpClient) {}
 
-  addStudent(formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrl, formData);
+  addStudent(formData: FormData): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(API_ENDPOINTS.ADD_STUDENT, formData);
   }
 
-  getStudents(): Observable<any> {
-    return this.http.get(this.apiUrlShowStudents);
+  getStudents(): Observable<StudentResponse[]> {
+    return this.http.get<StudentResponse[]>(API_ENDPOINTS.SHOW_STUDENTS);
   }
 
-  getRegisteredStudents(): Observable<any> {
-    return this.http.get(this.apiUrlShowRegisteredStudents);
+  getStudentById(id: number): Observable<StudentResponse> {
+    return this.http.get<StudentResponse>(`${API_ENDPOINTS.SHOW_STUDENTS}/${id}`);
   }
 
-  registerStudentPage(): Observable<any> {
-    return this.http.get(this.apiUrlRegisterStudentPage);
+  updateStudent(id: number, formData: FormData): Observable<ApiResponse> {
+    // Use POST for FormData updates (Laravel limitation with PUT + FormData)
+    // Add _method=PUT so backend knows it's an update, not a create
+    formData.append('_method', 'PUT');
+    return this.http.post<ApiResponse>(`${API_ENDPOINTS.UPDATE_STUDENT}/${id}`, formData);
   }
 
-  registerStudent(formData: FormData): Observable<any> {
-    return this.http.post(this.apiUrlRegisterStudent, formData);
+  deleteStudent(id: number): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${API_ENDPOINTS.DELETE_STUDENT}/${id}`);
   }
 
-  deleteFromClass(id: number): Observable<any> {
-    const apiUrlDeleteFromClass = `http://localhost:8000/api/DeleteStudentFromClass/${id}`;
-    return this.http.delete(apiUrlDeleteFromClass);
+  getRegisteredStudents(): Observable<StudentRegistration[]> {
+    return this.http.get<StudentRegistration[]>(API_ENDPOINTS.SHOW_REGISTERED_STUDENTS);
   }
 
-  deleteFromCourse(id: number): Observable<any> {
-    const apiUrlDeleteFromCourse = `http://localhost:8000/api/DeleteStudentFromCourse/${id}`;
-    return this.http.delete(apiUrlDeleteFromCourse);
+  registerStudentPage(): Observable<RegisterStudentPageResponse> {
+    return this.http.get<RegisterStudentPageResponse>(API_ENDPOINTS.REGISTER_STUDENT_PAGE);
+  }
+
+  registerStudent(formData: FormData): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(API_ENDPOINTS.REGISTER_STUDENT, formData);
+  }
+
+  deleteFromClass(id: number): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${API_ENDPOINTS.DELETE_STUDENT_FROM_CLASS}/${id}`);
+  }
+
+  deleteFromCourse(id: number): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${API_ENDPOINTS.DELETE_STUDENT_FROM_COURSE}/${id}`);
   }
 }

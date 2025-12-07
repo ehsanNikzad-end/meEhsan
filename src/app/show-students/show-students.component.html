@@ -1,54 +1,161 @@
-<table
-  class="table table-bordered text-red"
-  style="text-align: center; font-size: 25px"
->
-  <thead>
-    <tr class="">
-      <th>Name</th>
-      <th>Picture</th>
-      <th>Age</th>
-      <th>Class</th>
-      <th>Time</th>
-      <th>Teacher</th>
-      <th>X_class</th>
-      <th>X_course</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let registeredOne of registeredOnes">
-      <td>{{ registeredOne.student.name }}</td>
-      <td>
-        <img
-          [src]="
-            'http://localhost:8000/students/' + registeredOne.student.picture
-          "
-          alt="Student Picture"
-          width="80"
-          height="80"
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="page-title">Registered Students</h1>
+        <p class="page-subtitle">Manage and view all registered students</p>
+      </div>
+    </div>
+    <button class="btn-add" routerLink="/add-student">
+      <i class="bi bi-plus-circle"></i> Add New Student
+    </button>
+  </div>
+
+  <div class="content-wrapper">
+    <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
+      <p>Loading...</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" *ngIf="!isLoading">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+          <i class="bi bi-people"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ filteredStudents.length }}</div>
+          <div class="stat-label">Total Students</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ registeredOnes.length }}</div>
+          <div class="stat-label">Registered</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+          <i class="bi bi-book"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ classKeys.length }}</div>
+          <div class="stat-label">Classes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="search-section" *ngIf="!isLoading">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by name, country, class, teacher, or subject..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
         />
-      </td>
-      <td>{{ registeredOne.student.age }}</td>
-      <td>{{ registeredOne.classs.classId }}</td>
-      <td>{{ registeredOne.classs.time }}</td>
-      <td>{{ registeredOne.classs.teacher }}</td>
-      <td>
-        <button
-          (click)="deleteFromClass(registeredOne.id)"
-          class="btn closing btn-danger"
-          style="background-color: red; border-radius: 5px"
-        >
-          R_F_Class
+        <button class="search-btn" (click)="onSearch()" *ngIf="searchTerm">
+          <i class="bi bi-x"></i>
         </button>
-      </td>
-      <td>
-        <button
-          (click)="deleteFromCourse(registeredOne.student.id)"
-          class="btn closing btn-danger"
-          style="background-color: red; border-radius: 5px"
-        >
-          R_F_Course
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+      <div class="results-info">
+        Showing {{ filteredStudents.length }} {{ filteredStudents.length === 1 ? 'student' : 'students' }} 
+        in {{ classKeys.length }} {{ classKeys.length === 1 ? 'class' : 'classes' }}
+      </div>
+    </div>
+
+    <!-- Students Grouped by Class -->
+    <div *ngIf="!isLoading && filteredStudents.length > 0">
+      <div class="class-group" *ngFor="let classKey of classKeys">
+        <div class="class-group-header">
+          <div class="class-group-info">
+            <h2 class="class-group-title">{{ classKey }}</h2>
+            <div class="class-group-meta">
+              <span *ngIf="groupedStudents[classKey][0]?.classs?.subject">
+                <i class="bi bi-book"></i> {{ groupedStudents[classKey][0].classs.subject }}
+              </span>
+              <span *ngIf="groupedStudents[classKey][0]?.classs?.teacher">
+                <i class="bi bi-person-badge"></i> {{ groupedStudents[classKey][0].classs.teacher }}
+              </span>
+              <span *ngIf="groupedStudents[classKey][0]?.classs?.time">
+                <i class="bi bi-clock"></i> {{ groupedStudents[classKey][0].classs.time }}
+              </span>
+            </div>
+          </div>
+          <div class="class-group-count">
+            {{ groupedStudents[classKey].length }} {{ groupedStudents[classKey].length === 1 ? 'Student' : 'Students' }}
+          </div>
+        </div>
+        <div class="students-grid">
+          <div class="student-card card-hover" *ngFor="let registeredOne of groupedStudents[classKey]; trackBy: trackByRegistrationId">
+            <div class="student-image">
+              <img
+                [src]="getImageUrl(registeredOne.student.picture)"
+                [alt]="registeredOne.student.name"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjcwIiByPSIzMCIgZmlsbD0iIzljYTNhZiIvPjxwYXRoIGQ9Ik0gNTAgMTMwIFEgNTAgMTIwIDEwMCAxMjAgVCAxNTAgMTIwIFEgMTUwIDEzMCAxMDAgMTMwIFoiIGZpbGw9IiM5Y2EzYWYiLz48L3N2Zz4='"
+              />
+              <div class="student-badge">{{ registeredOne.classs.classId }}</div>
+            </div>
+            <div class="student-info">
+              <h3 class="student-name">{{ registeredOne.student.name }}</h3>
+              <div class="student-details">
+                <div class="detail-item">
+                  <i class="bi bi-calendar"></i>
+                  <span>Age: {{ registeredOne.student.age }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-globe"></i>
+                  <span>{{ registeredOne.student.country }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-book"></i>
+                  <span>{{ registeredOne.classs.subject }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-person-badge"></i>
+                  <span>{{ registeredOne.classs.teacher }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="bi bi-clock"></i>
+                  <span>{{ registeredOne.classs.time }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="student-actions">
+              <button class="action-btn btn-edit" (click)="editStudent(registeredOne.student.id)" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="action-btn btn-warning" (click)="deleteFromClass(registeredOne.id)" title="Remove from Class">
+                <i class="bi bi-x-circle"></i>
+              </button>
+              <button class="action-btn btn-danger" (click)="deleteFromCourse(registeredOne.student.id)" title="Remove from Course">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredStudents.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h3>No students found</h3>
+      <p>{{ searchTerm ? 'Try adjusting your search criteria' : 'Get started by adding your first student' }}</p>
+      <button class="btn btn-primary" routerLink="/add-student" *ngIf="!searchTerm">
+        <i class="bi bi-plus-circle"></i> Add First Student
+      </button>
+    </div>
+
+  </div>
+</div>
+

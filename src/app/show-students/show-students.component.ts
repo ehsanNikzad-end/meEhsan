@@ -1,56 +1,165 @@
-import { Component, NgModule, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { NgFor } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { StudentService } from '../services/student.service';
+import { StudentRegistration } from '../shared/models/registration.model';
+import { LoadingService } from '../shared/services/loading.service';
+import { MessageService } from '../shared/services/message.service';
+import { ConfirmationService } from '../shared/services/confirmation.service';
+import { API_ENDPOINTS } from '../shared/constants/api-endpoints';
 
 @Component({
   selector: 'app-show-students',
   standalone: true,
-  imports: [NgFor],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+  ],
   templateUrl: './show-students.component.html',
   styleUrl: './show-students.component.scss',
 })
 export class ShowStudentsComponent implements OnInit {
-  [x: string]: any;
-  registeredOnes: any[] = [];
-  constructor(private studentService: StudentService, private router: Router) {}
+  registeredOnes: StudentRegistration[] = [];
+  filteredStudents: StudentRegistration[] = [];
+  searchTerm: string = '';
+  isLoading: boolean = false;
+  Math = Math;
+  
+  // Grouped students by class
+  groupedStudents: { [key: string]: StudentRegistration[] } = {};
+  classKeys: string[] = [];
+
+  constructor(
+    private studentService: StudentService,
+    private router: Router,
+    private loadingService: LoadingService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
-    this.studentService.getStudents().subscribe(
-      (response) => {
+    this.loadStudents();
+  }
+
+  loadStudents(): void {
+    this.isLoading = true;
+    this.loadingService.show();
+    this.studentService.getRegisteredStudents().subscribe({
+      next: (response) => {
         this.registeredOnes = response;
+        this.filteredStudents = response;
+        this.groupStudents();
+        this.isLoading = false;
+        this.loadingService.hide();
       },
-      (error) => {
-        console.error('Error loading classes:', error);
+      error: (err) => {
+        this.messageService.showError(err, 'Student');
+        this.isLoading = false;
+        this.loadingService.hide();
+      },
+    });
+  }
+
+  onSearch(): void {
+    if (!this.searchTerm.trim()) {
+      this.filteredStudents = this.registeredOnes;
+    } else {
+      const term = this.searchTerm.toLowerCase();
+      this.filteredStudents = this.registeredOnes.filter(
+        (reg) =>
+          reg.student?.name?.toLowerCase().includes(term) ||
+          reg.student?.country?.toLowerCase().includes(term) ||
+          reg.classs?.classId?.toLowerCase().includes(term) ||
+          reg.classs?.teacher?.toLowerCase().includes(term) ||
+          reg.classs?.subject?.toLowerCase().includes(term)
+      );
+    }
+    this.groupStudents();
+  }
+
+  groupStudents(): void {
+    this.groupedStudents = {};
+    this.filteredStudents.forEach((reg) => {
+      const classKey = reg.classs?.classId || 'Unknown';
+      if (!this.groupedStudents[classKey]) {
+        this.groupedStudents[classKey] = [];
       }
-    );
+      this.groupedStudents[classKey].push(reg);
+    });
+    this.classKeys = Object.keys(this.groupedStudents).sort();
   }
 
-  deleteFromClass(id: number) {
-    if (confirm('Are you sure you want to delete this student?')) {
-      this.studentService.deleteFromClass(id).subscribe(
-        (response) => {
-          this.registeredOnes = this.registeredOnes.filter((c) => c.id !== id);
-          console.log('Student deleted from class', response);
-        },
-        (error) => {
-          console.error('Error deleting class:', error);
-        }
-      );
-    }
+
+  trackByRegistrationId(index: number, item: StudentRegistration): number {
+    return item.id;
   }
 
-  deleteFromCourse(id: number) {
-    if (confirm('Are you sure you want to delete this student?')) {
-      this.studentService.deleteFromCourse(id).subscribe(
-        (response) => {
-          this.registeredOnes = this.registeredOnes.filter((c) => c.id !== id);
-          console.log('Student deleted from course', response);
-        },
-        (error) => {
-          console.error('Error deleting Course:', error);
-        }
-      );
+  getImageUrl(picture: string | null | undefined): string {
+    if (!picture || picture.trim() === '') {
+      // Default avatar SVG - simple man icon
+      return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjcwIiByPSIzMCIgZmlsbD0iIzljYTNhZiIvPjxwYXRoIGQ9Ik0gNTAgMTMwIFEgNTAgMTIwIDEwMCAxMjAgVCAxNTAgMTIwIFEgMTUwIDEzMCAxMDAgMTMwIFoiIGZpbGw9IiM5Y2EzYWYiLz48L3N2Zz4=';
     }
+    return `${API_ENDPOINTS.IMAGE_BASE_URL}${picture}`;
+  }
+
+  deleteFromClass(id: number): void {
+    this.confirmationService.confirm({
+      title: 'Remove from Class',
+      message: 'Are you sure you want to remove this student from the class?',
+      confirmText: 'Remove',
+      cancelText: 'Cancel',
+      confirmButtonClass: 'btn-warning',
+      iconType: 'warning',
+    }).subscribe((confirmed) => {
+      if (confirmed) {
+        this.isLoading = true;
+        this.loadingService.show();
+        this.studentService.deleteFromClass(id).subscribe({
+          next: () => {
+            this.messageService.success('Student removed from class successfully!');
+            this.loadingService.hide();
+            this.loadStudents();
+          },
+          error: (err) => {
+            this.messageService.showError(err, 'Student Registration');
+            this.isLoading = false;
+            this.loadingService.hide();
+          },
+        });
+      }
+    });
+  }
+
+  deleteFromCourse(id: number): void {
+    this.confirmationService.confirm({
+      title: 'Remove from Course',
+      message: 'Are you sure you want to remove this student from the course? This action cannot be undone.',
+      confirmText: 'Remove',
+      cancelText: 'Cancel',
+      iconType: 'danger',
+    }).subscribe((confirmed) => {
+      if (confirmed) {
+        this.isLoading = true;
+        this.loadingService.show();
+        this.studentService.deleteFromCourse(id).subscribe({
+          next: () => {
+            this.messageService.success('Student removed from course successfully!');
+            this.loadingService.hide();
+            this.loadStudents();
+          },
+          error: (err) => {
+            this.messageService.showError(err, 'Student');
+            this.isLoading = false;
+            this.loadingService.hide();
+          },
+        });
+      }
+    });
+  }
+
+  editStudent(id: number): void {
+    this.router.navigate(['/edit-student', id]);
   }
 }

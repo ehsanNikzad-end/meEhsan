@@ -1,58 +1,132 @@
-<div class="container-fluid mt-5" style="text-align: center">
-  <form (ngSubmit)="onSubmit()">
-    <label>
-      Class_id:
-      <input
-        type="number"
-        [(ngModel)]="classForm.classId"
-        name="classId"
-        placeholder="Class_id"
-      />
-    </label>
-    <label>
-      Subject:
-      <input
-        type="text"
-        [(ngModel)]="classForm.subject"
-        name="subject"
-        placeholder="subject"
-      />
-    </label>
-    <label>
-      Fee:
-      <input
-        type="number"
-        [(ngModel)]="classForm.fee"
-        name="fee"
-        placeholder="fee"
-      />
-    </label>
-    <label>
-      Time:
-      <input
-        type="time"
-        [(ngModel)]="classForm.time"
-        name="time"
-        placeholder="time"
-      />
-    </label>
-    <label>
-      Teacher:
-      <select
-        type=""
-        [(ngModel)]="classForm.teacher"
-        name="teacher"
-        class="btn-lg btn-secondary"
-      >
-        <option value="Ahmad">Ahmad</option>
-        <option value="Qadir">Qadir</option>
-        <option value="Naieem">Naieem</option>
-        <option value="Abdullah">Abdullah</option>
-        <option value="Nabi">Nabi</option>
-        <option value="Qafoor">Qafoor</option>
-        <option value="Qafoor">Wali Ahmad</option>
-      </select>
-    </label>
-    <input type="submit" name="submit" value="Record" class="btn btn-success" />
-  </form>
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-book-fill"></i>
+      </div>
+      <div>
+        <h1 class="page-title">{{ isEditMode ? 'ویرایش صنف' : 'افزودن صنف جدید' }}</h1>
+        <p class="page-subtitle">{{ isEditMode ? 'اطلاعات صنف را به‌روزرسانی کنید' : 'جزئیات را پر کنید تا یک صنف جدید اضافه شود' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="form-card">
+      <form [formGroup]="classForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="classId" class="form-label">
+              <i class="bi bi-hash"></i> شناسه صنف <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('classId')"
+              id="classId"
+              formControlName="classId"
+              placeholder="شناسه صنف را وارد کنید (مثال: CS101)"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('classId')">
+              {{ getFieldError('classId') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subject" class="form-label">
+              <i class="bi bi-book"></i> مضمون <span class="required">*</span>
+            </label>
+            <select
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('subject')"
+              id="subject"
+              formControlName="subject"
+            >
+              <option value="">یک مضمون انتخاب کنید</option>
+              <option *ngFor="let subject of subjects" [value]="subject.name">
+                📚 {{ subject.name }}
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('subject')">
+              {{ getFieldError('subject') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="fee" class="form-label">
+              <i class="bi bi-currency-exchange"></i> قیمت (افغانی) <span class="required">*</span>
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('fee')"
+              id="fee"
+              formControlName="fee"
+              placeholder="مقدار قیمت را به افغانی وارد کنید"
+              min="0"
+              step="0.01"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('fee')">
+              {{ getFieldError('fee') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="time" class="form-label">
+              <i class="bi bi-clock"></i> وقت <span class="required">*</span>
+            </label>
+            <input
+              type="time"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('time')"
+              id="time"
+              formControlName="time"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('time')">
+              {{ getFieldError('time') }}
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="teacher" class="form-label">
+              <i class="bi bi-person-badge"></i> استاد <span class="required">*</span>
+            </label>
+            <select
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('teacher')"
+              id="teacher"
+              formControlName="teacher"
+              [disabled]="!classForm.get('subject')?.value || filteredTeachers.length === 0"
+            >
+              <option value="">{{ filteredTeachers.length === 0 ? 'برای مضمون انتخاب شده استادی موجود نیست' : 'یک استاد انتخاب کنید' }}</option>
+              <option *ngFor="let teacher of filteredTeachers" [value]="teacher.name">
+                👨‍🏫 {{ teacher.name }}<span *ngIf="teacher.phone"> • 📞 {{ teacher.phone }}</span>
+              </option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('teacher')">
+              {{ getFieldError('teacher') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+          >
+            <i class="bi bi-x-circle"></i> لغو
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="classForm.invalid"
+          >
+            <i class="bi" [class.bi-check-circle]="!isEditMode" [class.bi-pencil]="isEditMode"></i>
+            {{ isEditMode ? 'به‌روزرسانی صنف' : 'افزودن صنف' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

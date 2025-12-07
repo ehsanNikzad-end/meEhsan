@@ -1,16 +1,134 @@
-<table class="table table-bordered text-red">
-  <thead>
-    <tr>
-      <th>id</th>
-      <th>Class_id</th>
-      <th>Student_id</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let registeredOne of registeredOnes">
-      <td>{{ registeredOne.id }}</td>
-      <td>{{ registeredOne.class_id }}</td>
-      <td>{{ registeredOne.student_id }}</td>
-    </tr>
-  </tbody>
-</table>
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="page-title">Registered Students Overview</h1>
+        <p class="page-subtitle">View all student-class registrations</p>
+      </div>
+    </div>
+    <button class="btn-add" routerLink="/register-student">
+      <i class="bi bi-plus-circle"></i> Register New Student
+    </button>
+  </div>
+
+  <div class="content-wrapper">
+    <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
+      <p>Loading...</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" *ngIf="!isLoading">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ filteredRegistrations.length }}</div>
+          <div class="stat-label">Total Registrations</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+          <i class="bi bi-people"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ registeredOnes.length }}</div>
+          <div class="stat-label">All Records</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-section" *ngIf="!isLoading">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by ID, student name, class ID, or subject..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+        <button class="search-btn" (click)="onSearch()" *ngIf="searchTerm">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="results-info">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+        {{ Math.min(currentPage * itemsPerPage, filteredRegistrations.length) }} 
+        of {{ filteredRegistrations.length }} registrations
+      </div>
+    </div>
+
+    <!-- Registrations Grid -->
+    <div class="registrations-grid" *ngIf="!isLoading && filteredRegistrations.length > 0">
+      <div class="registration-card card-hover" *ngFor="let registeredOne of paginatedRegistrations; trackBy: trackByRegistrationId">
+        <div class="registration-header">
+          <div class="registration-id">#{{ registeredOne.id }}</div>
+        </div>
+        <div class="registration-body">
+          <div class="student-section">
+            <div class="student-avatar">
+              <img
+                [src]="getImageUrl(registeredOne.student.picture)"
+                [alt]="registeredOne.student.name"
+                onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjcwIiByPSIzMCIgZmlsbD0iIzljYTNhZiIvPjxwYXRoIGQ9Ik0gNTAgMTMwIFEgNTAgMTIwIDEwMCAxMjAgVCAxNTAgMTIwIFEgMTUwIDEzMCAxMDAgMTMwIFoiIGZpbGw9IiM5Y2EzYWYiLz48L3N2Zz4='"
+              />
+            </div>
+            <div class="student-info">
+              <h4 class="student-name">{{ registeredOne.student.name }}</h4>
+              <div class="student-meta">
+                <span><i class="bi bi-calendar"></i> Age: {{ registeredOne.student.age }}</span>
+                <span><i class="bi bi-globe"></i> {{ registeredOne.student.country }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="class-section">
+            <div class="class-badge">{{ registeredOne.classs.classId }}</div>
+            <h5 class="class-subject">{{ registeredOne.classs.subject }}</h5>
+            <div class="class-meta">
+              <span><i class="bi bi-person-badge"></i> {{ registeredOne.classs.teacher }}</span>
+              <span><i class="bi bi-clock"></i> {{ registeredOne.classs.time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredRegistrations.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h3>No registrations found</h3>
+      <p>{{ searchTerm ? 'Try adjusting your search criteria' : 'Get started by registering your first student' }}</p>
+      <button class="btn btn-primary" routerLink="/register-student" *ngIf="!searchTerm">
+        <i class="bi bi-plus-circle"></i> Register First Student
+      </button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="totalPages > 1 && !isLoading">
+      <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          class="page-btn"
+          [class.active]="currentPage === i + 1"
+          (click)="onPageChange(i + 1)"
+        >
+          {{ i + 1 }}
+        </button>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

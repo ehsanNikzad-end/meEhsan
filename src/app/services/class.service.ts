@@ -1,26 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_ENDPOINTS } from '../shared/constants/api-endpoints';
+import { Class, ClassResponse, ApiResponse } from '../shared/models/class.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClassService {
-  private apiUrlAdd = 'http://localhost:8000/api/AddClass';
-  private apiUrlShowClasses = 'http://localhost:8000/api/ShowClasses';
-
   constructor(private http: HttpClient) {}
 
-  addClass(formDataAddStudent: FormData): Observable<any> {
-    return this.http.post(this.apiUrlAdd, formDataAddStudent);
+  addClass(formData: FormData): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(API_ENDPOINTS.ADD_CLASS, formData);
   }
 
-  getClasses(): Observable<any> {
-    return this.http.get(this.apiUrlShowClasses);
+  getClasses(): Observable<ClassResponse[]> {
+    return this.http.get<ClassResponse[]>(API_ENDPOINTS.SHOW_CLASSES);
   }
 
-  deleteClass(id: number): Observable<any> {
-    const apiUrlDelete = `http://localhost:8000/api/DeleteClass/${id}`;
-    return this.http.delete(apiUrlDelete);
+  getClassById(id: number): Observable<ClassResponse> {
+    return this.http.get<ClassResponse>(`${API_ENDPOINTS.SHOW_CLASSES}/${id}`);
+  }
+
+  updateClass(id: number, formData: FormData): Observable<ApiResponse> {
+    // Use POST for FormData updates (consistent with student updates)
+    return this.http.post<ApiResponse>(`${API_ENDPOINTS.UPDATE_CLASS}/${id}`, formData);
+  }
+
+  deleteClass(id: number): Observable<ApiResponse> {
+    return this.http.delete<ApiResponse>(`${API_ENDPOINTS.DELETE_CLASS}/${id}`);
   }
 }
