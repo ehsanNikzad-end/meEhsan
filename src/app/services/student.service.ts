@@ -38,6 +38,10 @@ export class StudentService {
     return this.http.get<StudentRegistration[]>(API_ENDPOINTS.SHOW_REGISTERED_STUDENTS);
   }
 
+  getStudentsAll(): Observable<StudentRegistration[]> {
+    return this.http.get<StudentRegistration[]>(API_ENDPOINTS.SHOW_STUDENTS_ALL);
+  }
+
   registerStudentPage(): Observable<RegisterStudentPageResponse> {
     return this.http.get<RegisterStudentPageResponse>(API_ENDPOINTS.REGISTER_STUDENT_PAGE);
   }

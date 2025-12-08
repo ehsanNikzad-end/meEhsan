@@ -51,7 +51,7 @@ export class AddStudentComponent implements OnInit {
     this.studentForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       age: [null, [Validators.required, Validators.min(1), Validators.max(120)]],
-      country: ['', [Validators.required, Validators.minLength(2)]],
+      country: ['', [Validators.required]],
       phone: [null, [Validators.required, Validators.pattern(/^[0-9]{10,15}$/)]],
       picture: [null],
     });
@@ -164,7 +164,7 @@ export class AddStudentComponent implements OnInit {
         this.messageService.success(this.isEditMode ? 'شاگرد با موفقیت به‌روزرسانی شد!' : 'شاگرد با موفقیت اضافه شد!');
         this.loadingService.hide();
         this.resetForm();
-        this.router.navigate(['/show-students']);
+        this.router.navigate(['/register-student']);
       },
       error: (err) => {
         this.messageService.showError(err, 'Student');

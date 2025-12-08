@@ -5,12 +5,12 @@
         <i class="bi bi-book"></i>
       </div>
       <div class="header-text">
-        <h1 class="page-title">Subjects</h1>
-        <p class="page-subtitle">Manage all subjects</p>
+        <h1 class="page-title">مضامین</h1>
+        <p class="page-subtitle">مدیریت تمام مضامین</p>
       </div>
     </div>
     <button class="btn-add" routerLink="/add-subject">
-      <i class="bi bi-plus-circle"></i> Add New Subject
+      <i class="bi bi-plus-circle"></i> افزودن مضمون جدید
     </button>
   </div>
 
@@ -23,7 +23,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ filteredSubjects.length }}</div>
-          <div class="stat-label">Total Subjects</div>
+          <div class="stat-label">کل مضامین</div>
         </div>
       </div>
       <div class="stat-card">
@@ -32,7 +32,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ subjects.length }}</div>
-          <div class="stat-label">Active</div>
+          <div class="stat-label">فعال</div>
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
         <input
           type="text"
           class="search-input"
-          placeholder="Search by subject name..."
+          placeholder="جستجو بر اساس نام مضمون..."
           [(ngModel)]="searchTerm"
           (input)="onSearch()"
         />
@@ -53,7 +53,7 @@
         </button>
       </div>
       <div class="results-info">
-        Showing {{ filteredSubjects.length }} {{ filteredSubjects.length === 1 ? 'subject' : 'subjects' }}
+        نمایش {{ filteredSubjects.length }} {{ filteredSubjects.length === 1 ? 'مضمون' : 'مضمون' }}
       </div>
     </div>
 
@@ -84,10 +84,10 @@
       <div class="empty-icon">
         <i class="bi bi-inbox"></i>
       </div>
-      <h3>No subjects found</h3>
-      <p>{{ searchTerm ? 'Try adjusting your search criteria' : 'Get started by adding your first subject' }}</p>
+      <h3>هیچ مضمونی یافت نشد</h3>
+      <p>{{ searchTerm ? 'سعی کنید معیارهای جستجوی خود را تنظیم کنید' : 'با افزودن اولین مضمون خود شروع کنید' }}</p>
       <button class="btn btn-primary" routerLink="/add-subject" *ngIf="!searchTerm">
-        <i class="bi bi-plus-circle"></i> Add First Subject
+        <i class="bi bi-plus-circle"></i> افزودن اولین مضمون
       </button>
     </div>
   </div>

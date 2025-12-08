@@ -62,7 +62,7 @@ export class RegisterStudentComponent implements OnInit {
         this.loadingService.hide();
       },
       error: (err) => {
-        this.messageService.showError(err, 'Registration');
+        this.messageService.showError(err, 'ثبت‌نام');
         this.isLoading = false;
         this.loadingService.hide();
       },
@@ -90,7 +90,7 @@ export class RegisterStudentComponent implements OnInit {
         this.router.navigate(['/show-students']);
       },
       error: (err) => {
-        this.messageService.showError(err, 'Registration');
+        this.messageService.showError(err, 'ثبت‌نام');
         this.isLoading = false;
         this.loadingService.hide();
       },

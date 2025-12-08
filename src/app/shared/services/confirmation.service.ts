@@ -28,10 +28,10 @@ export class ConfirmationService {
     });
 
     const component = modalRef.componentInstance as ConfirmModalComponent;
-    component.title = options.title || 'Confirm Action';
+    component.title = options.title || 'تأیید عمل';
     component.message = options.message;
-    component.confirmText = options.confirmText || 'Confirm';
-    component.cancelText = options.cancelText || 'Cancel';
+    component.confirmText = options.confirmText || 'تأیید';
+    component.cancelText = options.cancelText || 'لغو';
     component.confirmButtonClass = options.confirmButtonClass || 'btn-danger';
     component.iconType = options.iconType || 'warning';
 

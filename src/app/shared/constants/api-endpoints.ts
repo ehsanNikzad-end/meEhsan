@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
   REGISTER_STUDENT_PAGE: `${environment.apiUrl}/RegisterStudentPage`,
   REGISTER_STUDENT: `${environment.apiUrl}/RegisterStudent`,
   SHOW_REGISTERED_STUDENTS: `${environment.apiUrl}/ShowRegisteredStudents`,
+  SHOW_STUDENTS_ALL: `${environment.apiUrl}/ShowStudentsAll`,
   DELETE_STUDENT_FROM_CLASS: `${environment.apiUrl}/DeleteStudentFromClass`,
   DELETE_STUDENT_FROM_COURSE: `${environment.apiUrl}/DeleteStudentFromCourse`,
   

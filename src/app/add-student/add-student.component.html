@@ -55,14 +55,17 @@
             <label for="country" class="form-label">
               <i class="bi bi-globe"></i> کشور <span class="required">*</span>
             </label>
-            <input
-              type="text"
+            <select
               class="form-control"
               [class.is-invalid]="isFieldInvalid('country')"
               id="country"
               formControlName="country"
-              placeholder="کشور را وارد کنید"
-            />
+            >
+              <option value="">کشور را انتخاب کنید</option>
+              <option value="افغانستان">🌍 افغانستان</option>
+              <option value="چین">🌏 چین</option>
+              <option value="ایران">🌍 ایران</option>
+            </select>
             <div class="invalid-feedback" *ngIf="isFieldInvalid('country')">
               {{ getFieldError('country') }}
             </div>

@@ -71,22 +71,22 @@ import { MessageService } from '../shared/services/message.service';
               <div class="action-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
                 <i class="bi bi-book"></i>
               </div>
-              <h3>Add Class</h3>
-              <p>Create a new class</p>
+              <h3>افزودن صنف</h3>
+              <p>ایجاد یک صنف جدید</p>
             </a>
             <a routerLink="/register-student" class="action-card">
               <div class="action-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
                 <i class="bi bi-clipboard-check"></i>
               </div>
-              <h3>Register Student</h3>
-              <p>Enroll student to class</p>
+              <h3>ثبت شاگرد</h3>
+              <p>ثبت نام شاگرد در صنف</p>
             </a>
             <a routerLink="/show-students" class="action-card">
               <div class="action-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
                 <i class="bi bi-people"></i>
               </div>
-              <h3>View Students</h3>
-              <p>Browse all students</p>
+              <h3>مشاهده شاگردان</h3>
+              <p>مرور تمام شاگردان</p>
             </a>
           </div>
         </div>
@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit {
         this.totalStudents = students.length;
       },
       error: (err) => {
-        this.messageService.showError(err, 'Student');
+        this.messageService.showError(err, 'شاگرد');
       }
     });
 
@@ -197,7 +197,7 @@ export class DashboardComponent implements OnInit {
         this.totalClasses = classes.length;
       },
       error: (err) => {
-        this.messageService.showError(err, 'Class');
+        this.messageService.showError(err, 'صنف');
       }
     });
 
@@ -207,7 +207,7 @@ export class DashboardComponent implements OnInit {
         this.loadingService.hide();
       },
       error: (err) => {
-        this.messageService.showError(err, 'Registration');
+        this.messageService.showError(err, 'ثبت‌نام');
         this.loadingService.hide();
       }
     });

@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
       
       <div class="header-right">
         <div class="header-actions">
-          <button class="action-btn" title="Notifications" *ngIf="showNotifications">
+          <button class="action-btn" title="اعلان‌ها" *ngIf="showNotifications">
             <i class="bi bi-bell"></i>
             <span class="badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
           </button>
@@ -36,14 +36,14 @@ import { Router } from '@angular/router';
             
             <div class="dropdown-menu" *ngIf="toggleUserMenu" (click)="$event.stopPropagation()">
               <a class="dropdown-item" (click)="navigateTo('/profile')">
-                <i class="bi bi-person"></i> Profile
+                <i class="bi bi-person"></i> پروفایل
               </a>
               <a class="dropdown-item" (click)="navigateTo('/settings')">
-                <i class="bi bi-gear"></i> Settings
+                <i class="bi bi-gear"></i> تنظیمات
               </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" (click)="logout()">
-                <i class="bi bi-box-arrow-right"></i> Logout
+                <i class="bi bi-box-arrow-right"></i> خروج
               </a>
             </div>
           </div>
@@ -272,9 +272,9 @@ import { Router } from '@angular/router';
   `]
 })
 export class HeaderComponent {
-  @Input() title: string = 'Dashboard';
+  @Input() title: string = 'داشبورد';
   @Input() subtitle: string = '';
-  @Input() userName: string = 'Admin';
+  @Input() userName: string = 'مدیر';
   @Input() notificationCount: number = 0;
   @Input() showNotifications: boolean = true;
   @Input() showMobileMenu: boolean = false;

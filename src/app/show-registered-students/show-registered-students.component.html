@@ -5,18 +5,18 @@
         <i class="bi bi-check-circle-fill"></i>
       </div>
       <div class="header-text">
-        <h1 class="page-title">Registered Students Overview</h1>
-        <p class="page-subtitle">View all student-class registrations</p>
+        <h1 class="page-title">نمای کلی شاگردان ثبت‌نام شده</h1>
+        <p class="page-subtitle">مشاهده تمام ثبت‌نام‌های شاگرد-صنف</p>
       </div>
     </div>
     <button class="btn-add" routerLink="/register-student">
-      <i class="bi bi-plus-circle"></i> Register New Student
+      <i class="bi bi-plus-circle"></i> ثبت شاگرد جدید
     </button>
   </div>
 
   <div class="content-wrapper">
     <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
-      <p>Loading...</p>
+      <p>...در حال بارگذاری</p>
     </div>
 
     <!-- Stats Cards -->
@@ -27,7 +27,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ filteredRegistrations.length }}</div>
-          <div class="stat-label">Total Registrations</div>
+          <div class="stat-label">کل ثبت‌نام‌ها</div>
         </div>
       </div>
       <div class="stat-card">
@@ -36,7 +36,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ registeredOnes.length }}</div>
-          <div class="stat-label">All Records</div>
+          <div class="stat-label">تمام رکوردها</div>
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@
         <input
           type="text"
           class="search-input"
-          placeholder="Search by ID, student name, class ID, or subject..."
+          placeholder="جستجو بر اساس شناسه، نام شاگرد، شناسه صنف یا مضمون..."
           [(ngModel)]="searchTerm"
           (input)="onSearch()"
         />
@@ -57,9 +57,9 @@
         </button>
       </div>
       <div class="results-info">
-        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+        نمایش {{ (currentPage - 1) * itemsPerPage + 1 }} - 
         {{ Math.min(currentPage * itemsPerPage, filteredRegistrations.length) }} 
-        of {{ filteredRegistrations.length }} registrations
+        از {{ filteredRegistrations.length }} ثبت‌نام
       </div>
     </div>
 
@@ -81,7 +81,7 @@
             <div class="student-info">
               <h4 class="student-name">{{ registeredOne.student.name }}</h4>
               <div class="student-meta">
-                <span><i class="bi bi-calendar"></i> Age: {{ registeredOne.student.age }}</span>
+                <span><i class="bi bi-calendar"></i> سن: {{ registeredOne.student.age }}</span>
                 <span><i class="bi bi-globe"></i> {{ registeredOne.student.country }}</span>
               </div>
             </div>
@@ -104,10 +104,10 @@
       <div class="empty-icon">
         <i class="bi bi-inbox"></i>
       </div>
-      <h3>No registrations found</h3>
-      <p>{{ searchTerm ? 'Try adjusting your search criteria' : 'Get started by registering your first student' }}</p>
+      <h3>هیچ ثبت‌نامی یافت نشد</h3>
+      <p>{{ searchTerm ? 'سعی کنید معیارهای جستجوی خود را تنظیم کنید' : 'با ثبت اولین شاگرد خود شروع کنید' }}</p>
       <button class="btn btn-primary" routerLink="/register-student" *ngIf="!searchTerm">
-        <i class="bi bi-plus-circle"></i> Register First Student
+        <i class="bi bi-plus-circle"></i> ثبت اولین شاگرد
       </button>
     </div>
 

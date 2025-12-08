@@ -22,6 +22,7 @@ import { API_ENDPOINTS } from '../shared/constants/api-endpoints';
 })
 export class ShowStudentsComponent implements OnInit {
   registeredOnes: StudentRegistration[] = [];
+  studentsAll: StudentRegistration[] = [];
   filteredStudents: StudentRegistration[] = [];
   searchTerm: string = '';
   isLoading: boolean = false;
@@ -46,6 +47,7 @@ export class ShowStudentsComponent implements OnInit {
   loadStudents(): void {
     this.isLoading = true;
     this.loadingService.show();
+    this.loadStudentsAll();
     this.studentService.getRegisteredStudents().subscribe({
       next: (response) => {
         this.registeredOnes = response;
@@ -55,9 +57,20 @@ export class ShowStudentsComponent implements OnInit {
         this.loadingService.hide();
       },
       error: (err) => {
-        this.messageService.showError(err, 'Student');
+        this.messageService.showError(err, 'شاگرد');
         this.isLoading = false;
         this.loadingService.hide();
+      },
+    });
+  }
+
+  loadStudentsAll(): void {
+    this.studentService.getStudentsAll().subscribe({
+      next: (response) => {
+        this.studentsAll = response;
+      },
+      error: (err) => {
+        this.messageService.showError(err, 'شاگرد');
       },
     });
   }
@@ -82,7 +95,7 @@ export class ShowStudentsComponent implements OnInit {
   groupStudents(): void {
     this.groupedStudents = {};
     this.filteredStudents.forEach((reg) => {
-      const classKey = reg.classs?.classId || 'Unknown';
+      const classKey = reg.classs?.classId || 'نامشخص';
       if (!this.groupedStudents[classKey]) {
         this.groupedStudents[classKey] = [];
       }
@@ -106,10 +119,10 @@ export class ShowStudentsComponent implements OnInit {
 
   deleteFromClass(id: number): void {
     this.confirmationService.confirm({
-      title: 'Remove from Class',
-      message: 'Are you sure you want to remove this student from the class?',
-      confirmText: 'Remove',
-      cancelText: 'Cancel',
+      title: 'حذف از صنف',
+      message: 'آیا مطمئن هستید که می‌خواهید این شاگرد را از صنف حذف کنید؟',
+      confirmText: 'حذف',
+      cancelText: 'لغو',
       confirmButtonClass: 'btn-warning',
       iconType: 'warning',
     }).subscribe((confirmed) => {
@@ -118,7 +131,7 @@ export class ShowStudentsComponent implements OnInit {
         this.loadingService.show();
         this.studentService.deleteFromClass(id).subscribe({
           next: () => {
-            this.messageService.success('Student removed from class successfully!');
+            this.messageService.success('شاگرد با موفقیت از صنف حذف شد!');
             this.loadingService.hide();
             this.loadStudents();
           },
@@ -134,10 +147,10 @@ export class ShowStudentsComponent implements OnInit {
 
   deleteFromCourse(id: number): void {
     this.confirmationService.confirm({
-      title: 'Remove from Course',
-      message: 'Are you sure you want to remove this student from the course? This action cannot be undone.',
-      confirmText: 'Remove',
-      cancelText: 'Cancel',
+      title: 'حذف از دوره',
+      message: 'آیا مطمئن هستید که می‌خواهید این شاگرد را از دوره حذف کنید؟ این عمل قابل بازگشت نیست.',
+      confirmText: 'حذف',
+      cancelText: 'لغو',
       iconType: 'danger',
     }).subscribe((confirmed) => {
       if (confirmed) {
@@ -145,7 +158,7 @@ export class ShowStudentsComponent implements OnInit {
         this.loadingService.show();
         this.studentService.deleteFromCourse(id).subscribe({
           next: () => {
-            this.messageService.success('Student removed from course successfully!');
+            this.messageService.success('شاگرد با موفقیت از دوره حذف شد!');
             this.loadingService.hide();
             this.loadStudents();
           },

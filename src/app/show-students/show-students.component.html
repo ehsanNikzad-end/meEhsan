@@ -5,18 +5,18 @@
         <i class="bi bi-people-fill"></i>
       </div>
       <div class="header-text">
-        <h1 class="page-title">Registered Students</h1>
-        <p class="page-subtitle">Manage and view all registered students</p>
+        <h1 class="page-title">شاگردان ثبت‌نام شده</h1>
+        <p class="page-subtitle">مدیریت و مشاهده تمام شاگردان ثبت‌نام شده</p>
       </div>
     </div>
     <button class="btn-add" routerLink="/add-student">
-      <i class="bi bi-plus-circle"></i> Add New Student
+      <i class="bi bi-plus-circle"></i> افزودن شاگرد جدید
     </button>
   </div>
 
   <div class="content-wrapper">
     <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
-      <p>Loading...</p>
+      <p>...در حال بارگذاری</p>
     </div>
 
     <!-- Stats Cards -->
@@ -26,8 +26,8 @@
           <i class="bi bi-people"></i>
         </div>
         <div class="stat-content">
-          <div class="stat-value">{{ filteredStudents.length }}</div>
-          <div class="stat-label">Total Students</div>
+          <div class="stat-value">{{ studentsAll.length }}</div>
+          <div class="stat-label">کل شاگردان</div>
         </div>
       </div>
       <div class="stat-card">
@@ -36,7 +36,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ registeredOnes.length }}</div>
-          <div class="stat-label">Registered</div>
+          <div class="stat-label">ثبت‌نام شده</div>
         </div>
       </div>
       <div class="stat-card">
@@ -45,7 +45,7 @@
         </div>
         <div class="stat-content">
           <div class="stat-value">{{ classKeys.length }}</div>
-          <div class="stat-label">Classes</div>
+          <div class="stat-label">صنوف</div>
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
         <input
           type="text"
           class="search-input"
-          placeholder="Search by name, country, class, teacher, or subject..."
+          placeholder="جستجو بر اساس نام، کشور، صنف، استاد یا مضمون..."
           [(ngModel)]="searchTerm"
           (input)="onSearch()"
         />
@@ -66,8 +66,8 @@
         </button>
       </div>
       <div class="results-info">
-        Showing {{ filteredStudents.length }} {{ filteredStudents.length === 1 ? 'student' : 'students' }} 
-        in {{ classKeys.length }} {{ classKeys.length === 1 ? 'class' : 'classes' }}
+        نمایش {{ filteredStudents.length }} {{ filteredStudents.length === 1 ? 'شاگرد' : 'شاگرد' }} 
+        در {{ classKeys.length }} {{ classKeys.length === 1 ? 'صنف' : 'صنف' }}
       </div>
     </div>
 
@@ -90,7 +90,7 @@
             </div>
           </div>
           <div class="class-group-count">
-            {{ groupedStudents[classKey].length }} {{ groupedStudents[classKey].length === 1 ? 'Student' : 'Students' }}
+            {{ groupedStudents[classKey].length }} {{ groupedStudents[classKey].length === 1 ? 'شاگرد' : 'شاگرد' }}
           </div>
         </div>
         <div class="students-grid">
@@ -108,7 +108,7 @@
               <div class="student-details">
                 <div class="detail-item">
                   <i class="bi bi-calendar"></i>
-                  <span>Age: {{ registeredOne.student.age }}</span>
+                  <span>سن: {{ registeredOne.student.age }}</span>
                 </div>
                 <div class="detail-item">
                   <i class="bi bi-globe"></i>
@@ -149,10 +149,10 @@
       <div class="empty-icon">
         <i class="bi bi-inbox"></i>
       </div>
-      <h3>No students found</h3>
-      <p>{{ searchTerm ? 'Try adjusting your search criteria' : 'Get started by adding your first student' }}</p>
+      <h3>هیچ شاگردی یافت نشد</h3>
+      <p>{{ searchTerm ? 'سعی کنید معیارهای جستجوی خود را تنظیم کنید' : 'با افزودن اولین شاگرد خود شروع کنید' }}</p>
       <button class="btn btn-primary" routerLink="/add-student" *ngIf="!searchTerm">
-        <i class="bi bi-plus-circle"></i> Add First Student
+        <i class="bi bi-plus-circle"></i> افزودن اولین شاگرد
       </button>
     </div>
 

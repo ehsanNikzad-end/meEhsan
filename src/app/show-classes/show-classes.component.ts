@@ -107,10 +107,10 @@ export class ShowClassesComponent implements OnInit {
 
   deleteClass(id: number): void {
     this.confirmationService.confirm({
-      title: 'Delete Class',
-      message: 'Are you sure you want to delete this class? This action cannot be undone.',
-      confirmText: 'Delete',
-      cancelText: 'Cancel',
+      title: 'حذف صنف',
+      message: 'آیا مطمئن هستید که می‌خواهید این صنف را حذف کنید؟ این عمل قابل بازگشت نیست.',
+      confirmText: 'حذف',
+      cancelText: 'لغو',
       iconType: 'danger',
     }).subscribe((confirmed) => {
       if (confirmed) {
@@ -118,7 +118,7 @@ export class ShowClassesComponent implements OnInit {
         this.loadingService.show();
         this.classService.deleteClass(id).subscribe({
           next: () => {
-            this.messageService.success('Class deleted successfully!');
+            this.messageService.success('صنف با موفقیت حذف شد!');
             this.loadingService.hide();
             this.loadClasses();
           },

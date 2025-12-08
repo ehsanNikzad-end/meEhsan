@@ -17,7 +17,7 @@ interface NavItem {
       <div class="sidebar-header">
         <div class="logo-container">
           <i class="bi bi-mortarboard-fill logo-icon"></i>
-          <span class="logo-text" *ngIf="!isCollapsed">StudentHub</span>
+          <span class="logo-text" *ngIf="!isCollapsed">مدیریت اکادمی</span>
         </div>
         <button class="toggle-btn" (click)="toggleSidebar()" title="تغییر اندازه منو">
           <i class="bi" [class.bi-chevron-left]="!isCollapsed" [class.bi-chevron-right]="isCollapsed"></i>
@@ -277,11 +277,11 @@ export class SidebarComponent implements OnInit {
     { label: 'افزودن صنف', route: '/add-class', icon: 'bi-book' },
     { label: 'افزودن استاد', route: '/add-teacher', icon: 'bi-person-badge' },
     { label: 'افزودن مضمون', route: '/add-subject', icon: 'bi-journal-text' },
+    { label: 'ثبت شاگرد', route: '/register-student', icon: 'bi-clipboard-check' },
     { label: 'شاگردان', route: '/show-students', icon: 'bi-people' },
     { label: 'صنوف', route: '/show-classes', icon: 'bi-list-ul' },
     { label: 'اساتید', route: '/show-teachers', icon: 'bi-person-badge' },
     { label: 'مضامین', route: '/show-subjects', icon: 'bi-book' },
-    { label: 'ثبت شاگرد', route: '/register-student', icon: 'bi-clipboard-check' },
     { label: 'ثبت‌نام‌ها', route: '/show-registered-students', icon: 'bi-check-circle' },
   ];
 

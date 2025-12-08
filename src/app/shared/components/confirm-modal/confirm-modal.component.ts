@@ -10,10 +10,10 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './confirm-modal.component.scss',
 })
 export class ConfirmModalComponent {
-  @Input() title: string = 'Confirm Action';
-  @Input() message: string = 'Are you sure you want to proceed?';
-  @Input() confirmText: string = 'Confirm';
-  @Input() cancelText: string = 'Cancel';
+  @Input() title: string = 'تأیید عمل';
+  @Input() message: string = 'آیا مطمئن هستید که می‌خواهید ادامه دهید؟';
+  @Input() confirmText: string = 'تأیید';
+  @Input() cancelText: string = 'لغو';
   @Input() confirmButtonClass: string = 'btn-danger';
   @Input() iconType: 'warning' | 'danger' | 'info' = 'warning';
 

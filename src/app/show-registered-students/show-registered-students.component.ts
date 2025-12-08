@@ -43,18 +43,29 @@ export class ShowRegisteredStudentsComponent implements OnInit {
   loadRegisteredStudents(): void {
     this.isLoading = true;
     this.loadingService.show();
+    this.loadStudentsAll();
     this.studentService.getRegisteredStudents().subscribe({
       next: (response) => {
-        this.registeredOnes = response;
         this.filteredRegistrations = response;
         this.updatePagination();
         this.isLoading = false;
         this.loadingService.hide();
       },
       error: (err) => {
-        this.messageService.showError(err, 'Student Registration');
+        this.messageService.showError(err, 'ثبت‌نام شاگرد');
         this.isLoading = false;
         this.loadingService.hide();
+      },
+    });
+  }
+  
+  loadStudentsAll(): void {
+    this.studentService.getStudentsAll().subscribe({
+      next: (response) => {
+        this.registeredOnes = response;
+      },
+      error: (err) => {
+        this.messageService.showError(err, 'شاگرد');
       },
     });
   }
