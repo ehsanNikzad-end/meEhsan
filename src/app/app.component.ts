@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { HeaderComponent } from './shared/components/header/header.component';
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
