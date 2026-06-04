@@ -26,6 +26,7 @@
             "assets": ["src/assets", "src/favicon.ico"],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ngx-toastr/toastr.css",
               "src/styles.scss",
               "src/assets/css/bootstrap.min.css",
               "src/assets/css/cssformat.css"
@@ -49,7 +50,13 @@
                   "maximumError": "8kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,

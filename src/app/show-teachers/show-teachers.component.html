@@ -1,0 +1,105 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-person-badge"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="page-title">اساتید</h1>
+        <p class="page-subtitle">مدیریت تمام اساتید</p>
+      </div>
+    </div>
+    <button class="btn-add" routerLink="/add-teacher">
+      <i class="bi bi-plus-circle"></i> افزودن استاد جدید
+    </button>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Stats Cards -->
+    <div class="stats-grid" *ngIf="!isLoading">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+          <i class="bi bi-person-badge"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ filteredTeachers.length }}</div>
+          <div class="stat-label">کل اساتید</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ teachers.length }}</div>
+          <div class="stat-label">فعال</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-section" *ngIf="!isLoading">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="جستجو بر اساس نام، شماره تماس یا مضمون..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+        <button class="search-btn" (click)="onSearch()" *ngIf="searchTerm">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="results-info">
+        نمایش {{ filteredTeachers.length }} {{ filteredTeachers.length === 1 ? 'استاد' : 'استاد' }}
+      </div>
+    </div>
+
+    <!-- Teachers Grid -->
+    <div class="teachers-grid" *ngIf="!isLoading && filteredTeachers.length > 0">
+      <div class="teacher-card card-hover" *ngFor="let teacher of filteredTeachers; trackBy: trackByTeacherId">
+        <div class="teacher-header">
+          <div class="teacher-avatar">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <div class="teacher-info">
+            <h3 class="teacher-name">{{ teacher.name }}</h3>
+            <div class="teacher-details">
+              <div class="detail-item">
+                <i class="bi bi-telephone"></i>
+                <span>{{ teacher.phone }}</span>
+              </div>
+              <div class="detail-item" *ngIf="teacher.subjects && teacher.subjects.length > 0">
+                <i class="bi bi-book"></i>
+                <span>{{ getSubjectsNames(teacher) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="teacher-actions">
+          <button class="action-btn btn-edit" (click)="editTeacher(teacher.id)" title="Edit">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="action-btn btn-danger" (click)="deleteTeacher(teacher.id)" title="Delete">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredTeachers.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h3>هیچ استادی یافت نشد</h3>
+      <p>{{ searchTerm ? 'سعی کنید معیارهای جستجوی خود را تنظیم کنید' : 'با افزودن اولین استاد خود شروع کنید' }}</p>
+      <button class="btn btn-primary" routerLink="/add-teacher" *ngIf="!searchTerm">
+        <i class="bi bi-plus-circle"></i> افزودن اولین استاد
+      </button>
+    </div>
+  </div>
+</div>
+

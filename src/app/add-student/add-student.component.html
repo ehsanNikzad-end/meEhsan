@@ -1,45 +1,143 @@
-<div class="container-fluid mt-5" style="text-align: center">
-  <form (ngSubmit)="onSubmit()">
-    <label>
-      Name:
-      <input
-        type="text"
-        [(ngModel)]="studentForm.name"
-        name="name"
-        placeholder="name"
-      />
-    </label>
-    <label>
-      age:
-      <input
-        type="number"
-        [(ngModel)]="studentForm.age"
-        name="age"
-        placeholder="age"
-      />
-    </label>
-    <label>
-      Country:
-      <input
-        type="text"
-        [(ngModel)]="studentForm.country"
-        name="country"
-        placeholder="country"
-      />
-    </label>
-    <label>
-      Phone:
-      <input
-        type="number"
-        [(ngModel)]="studentForm.phone"
-        name="phone"
-        placeholder="phone"
-      />
-    </label>
-    <label>
-      Student picture:
-      <input type="file" (change)="onFileChange($event)" name="picture" />
-    </label>
-    <input type="submit" name="submit" value="Record" class="btn btn-success" />
-  </form>
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-person-plus-fill"></i>
+      </div>
+      <div>
+        <h1 class="page-title">{{ isEditMode ? 'ویرایش شاگرد' : 'افزودن شاگرد جدید' }}</h1>
+        <p class="page-subtitle">{{ isEditMode ? 'اطلاعات شاگرد را به‌روزرسانی کنید' : 'جزئیات را پر کنید تا یک شاگرد جدید اضافه شود' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="form-card">
+      <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name" class="form-label">
+              <i class="bi bi-person"></i> نام کامل <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('name')"
+              id="name"
+              formControlName="name"
+              placeholder="نام کامل شاگرد را وارد کنید"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('name')">
+              {{ getFieldError('name') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="age" class="form-label">
+              <i class="bi bi-calendar"></i> سن <span class="required">*</span>
+            </label>
+            <input
+              type="number"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('age')"
+              id="age"
+              formControlName="age"
+              placeholder="سن را وارد کنید"
+              min="1"
+              max="120"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('age')">
+              {{ getFieldError('age') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="country" class="form-label">
+              <i class="bi bi-globe"></i> کشور <span class="required">*</span>
+            </label>
+            <select
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('country')"
+              id="country"
+              formControlName="country"
+            >
+              <option value="">کشور را انتخاب کنید</option>
+              <option value="افغانستان">🌍 افغانستان</option>
+              <option value="چین">🌏 چین</option>
+              <option value="ایران">🌍 ایران</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('country')">
+              {{ getFieldError('country') }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">
+              <i class="bi bi-telephone"></i> شماره تماس <span class="required">*</span>
+            </label>
+            <input
+              type="tel"
+              class="form-control"
+              [class.is-invalid]="isFieldInvalid('phone')"
+              id="phone"
+              formControlName="phone"
+              placeholder="شماره تماس را وارد کنید"
+            />
+            <div class="invalid-feedback" *ngIf="isFieldInvalid('phone')">
+              {{ getFieldError('phone') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+            <label for="picture" class="form-label">
+              <i class="bi bi-image"></i> عکس شاگرد
+            </label>
+          <div class="file-upload-area" [class.has-file]="selectedFile || imagePreview">
+            <input
+              type="file"
+              class="file-input"
+              id="picture"
+              accept="image/*"
+              (change)="onFileChange($event)"
+            />
+            <div class="file-upload-content" *ngIf="!imagePreview">
+              <i class="bi bi-cloud-upload"></i>
+              <p>برای آپلود کلیک کنید یا فایل را بکشید و رها کنید</p>
+              <small>PNG، JPG، GIF تا 5 مگابایت</small>
+            </div>
+            <div class="image-preview" *ngIf="imagePreview">
+              <img [src]="imagePreview" alt="Preview" />
+              <button
+                type="button"
+                class="remove-image-btn"
+                (click)="removeImage()"
+                title="حذف عکس"
+              >
+                <i class="bi bi-x-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+          >
+            <i class="bi bi-x-circle"></i> لغو
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="studentForm.invalid"
+          >
+            <i class="bi" [class.bi-check-circle]="!isEditMode" [class.bi-pencil]="isEditMode"></i>
+            {{ isEditMode ? 'به‌روزرسانی شاگرد' : 'افزودن شاگرد' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

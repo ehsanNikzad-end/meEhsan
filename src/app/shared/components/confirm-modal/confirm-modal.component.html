@@ -1,0 +1,35 @@
+<div class="confirm-dialog">
+  <div class="dialog-content">
+    <!-- Icon Section -->
+    <div class="icon-wrapper">
+      <div class="icon-circle" [ngClass]="iconCircleClass">
+        <i [ngClass]="iconClass"></i>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <h3 class="dialog-title">{{ title }}</h3>
+
+    <!-- Message -->
+    <p class="dialog-message">{{ message }}</p>
+
+    <!-- Actions -->
+    <div class="dialog-actions">
+      <button 
+        type="button" 
+        class="btn-cancel" 
+        (click)="dismiss()"
+        [attr.aria-label]="cancelText">
+        <span>{{ cancelText }}</span>
+      </button>
+      <button 
+        type="button" 
+        class="btn-confirm" 
+        [ngClass]="confirmButtonClass"
+        (click)="confirm()"
+        [attr.aria-label]="confirmText">
+        <span>{{ confirmText }}</span>
+      </button>
+    </div>
+  </div>
+</div>

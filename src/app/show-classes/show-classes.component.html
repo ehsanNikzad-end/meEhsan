@@ -1,35 +1,133 @@
-<table
-  style="text-align: center; font-size: 25px"
-  class="table table-bordered text-red"
->
-  <thead>
-    <tr class="">
-      <th>id</th>
-      <th>class_id</th>
-      <th>subject</th>
-      <th>fee</th>
-      <th>time</th>
-      <th>teacher</th>
-      <th>X</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let class of classes">
-      <td>{{ class.id }}</td>
-      <td>{{ class.classId }}</td>
-      <td>{{ class.subject }}</td>
-      <td>{{ class.fee }}</td>
-      <td>{{ class.time }}</td>
-      <td>{{ class.teacher }}</td>
-      <td>
-        <button
-          style="background-color: red; border-radius: 5px"
-          (click)="deleteClass(class.id)"
-          class="btn btn-danger"
-        >
-          delete
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <i class="bi bi-list-ul"></i>
+      </div>
+      <div class="header-text">
+        <h1 class="page-title">صنوف</h1>
+        <p class="page-subtitle">مدیریت تمام صنوف و دوره‌ها</p>
+      </div>
+    </div>
+    <button class="btn-add" routerLink="/add-class">
+      <i class="bi bi-plus-circle"></i> Add New Class
+    </button>
+  </div>
+
+  <div class="content-wrapper">
+    <div *ngIf="isLoading" style="text-align: center; padding: 20px;">
+      <p>...در حال بارگذاری</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid" *ngIf="!isLoading">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+          <i class="bi bi-book"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ filteredClasses.length }}</div>
+          <div class="stat-label">کل صنوف</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+          <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ classes.length }}</div>
+          <div class="stat-label">فعال</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-section" *ngIf="!isLoading">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="جستجو بر اساس شناسه صنف، مضمون، استاد یا وقت..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+        <button class="search-btn" (click)="onSearch()" *ngIf="searchTerm">
+          <i class="bi bi-x"></i>
         </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+      <div class="results-info">
+        Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+        {{ Math.min(currentPage * itemsPerPage, filteredClasses.length) }} 
+        از {{ filteredClasses.length }} صنف
+      </div>
+    </div>
+
+    <!-- Classes Grid -->
+    <div class="classes-grid" *ngIf="!isLoading && filteredClasses.length > 0">
+      <div class="class-card card-hover" *ngFor="let classItem of paginatedClasses; trackBy: trackByClassId">
+        <div class="class-header">
+          <div class="class-id-badge">{{ classItem.classId }}</div>
+          <div class="class-actions">
+            <button class="action-btn btn-edit" (click)="editClass(classItem.id)" title="ویرایش">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="action-btn btn-danger" (click)="deleteClass(classItem.id)" title="حذف">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="class-body">
+          <h3 class="class-subject">{{ classItem.subject }}</h3>
+          <div class="class-details">
+            <div class="detail-item">
+              <i class="bi bi-person-badge"></i>
+              <span>{{ classItem.teacher }}</span>
+            </div>
+            <div class="detail-item">
+              <i class="bi bi-clock"></i>
+              <span>{{ classItem.time }}</span>
+            </div>
+            <div class="detail-item fee">
+              <i class="bi bi-currency-exchange"></i>
+              <span>{{ formatFee(classItem.fee) }} Af</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredClasses.length === 0">
+      <div class="empty-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h3>هیچ صنفی یافت نشد</h3>
+      <p>{{ searchTerm ? 'سعی کنید معیارهای جستجوی خود را تنظیم کنید' : 'با افزودن اولین صنف خود شروع کنید' }}</p>
+      <button class="btn btn-primary" routerLink="/add-class" *ngIf="!searchTerm">
+        <i class="bi bi-plus-circle"></i> افزودن اولین صنف
+      </button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper" *ngIf="totalPages > 1 && !isLoading">
+      <div class="pagination">
+        <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          class="page-btn"
+          [class.active]="currentPage === i + 1"
+          (click)="onPageChange(i + 1)"
+        >
+          {{ i + 1 }}
+        </button>
+        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
